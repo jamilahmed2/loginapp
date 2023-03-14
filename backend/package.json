@@ -1,0 +1,11 @@
+{
+  "name": "otp-backend",
+  "version": "1.0.0",
+  "description": "OTP Verification, JWT Token, Authentication, Reset Password",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jamilahmed2",
+  "license": "ISC"
+}
