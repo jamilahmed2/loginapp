@@ -31,9 +31,9 @@ export const Username = () => {
                 <div className={styles.glass}>
 
                     <div className="title flex flex-col items-center">
-                        <h4 className='text-4xl font-bold'>Hello!</h4>
+                        <h4 className='text-4xl font-bold'>Username</h4>
                         <span className=' text-center text-gray-500'>
-                            Explore More by connecting with us.
+                            Enter Your username.
                         </span>
                     </div>
 

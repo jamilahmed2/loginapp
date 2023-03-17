@@ -1,0 +1,55 @@
+.p-icon {
+    position: relative;
+    left: 18rem;
+    top: 3rem;
+    font-size: 1.3rem;
+}
+.p-icon-2{
+    position: relative;
+    left: 16.6rem;
+    top: 8rem;
+    font-size: 1.3rem;
+}
+
+@media only screen and (max-width:1200px) {
+    .p-icon {
+        position: relative;
+        left: 16rem;
+        top: 3rem;
+        font-size: 1.3rem;
+    }
+    .p-icon-2 {
+        position: relative;
+        left: 14.5rem;
+        top: 8rem;
+        font-size: 1.3rem;
+    }
+}
+@media only screen and (max-width:1024px) {
+    .p-icon {
+        position: relative;
+        left: 16rem;
+        top: 3rem;
+        font-size: 1.3rem;
+    }
+    .p-icon-2 {
+        position: relative;
+        left: 14.5rem;
+        top: 8rem;
+        font-size: 1.3rem;
+    }
+}
+@media only screen and (max-width:600px) {
+    .p-icon {
+        position: relative;
+        left: 16rem;
+        top: 3rem;
+        font-size: 1.3rem;
+    }
+    .p-icon-2 {
+        position: relative;
+        left: 14.5rem;
+        top: 8rem;
+        font-size: 1.3rem;
+    }
+}
