@@ -7,7 +7,6 @@ export async function usernameValidate(values) {
     return errors
 }
 
-
 // -----> Validate  Signup <-----
 export async function signUpValidate(values) {
     const errors = usernameVerify({}, values);
@@ -30,6 +29,12 @@ export async function resetPasswordValidation(values) {
         errors.exist = toast.error("Password not matched")
     }
     return errors
+}
+
+// -----> Validate  Profile Page <-----
+export async function profileValidation(values){
+    const errors = emailVerify({},values);
+    return errors;
 }
 
 //  ************************************** //

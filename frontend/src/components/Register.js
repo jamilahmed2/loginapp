@@ -5,7 +5,7 @@ import styles from '../styles/Username.module.css'
 import { Toaster } from 'react-hot-toast'
 // <!-- ========== Using Formik To acces form data ========== -->
 import { useFormik } from 'formik'
-import { passwordValidate, signUpValidate } from '../helper/Validate'
+import {  signUpValidate } from '../helper/Validate'
 import convertToBase64 from '../helper/Convert'
 // <!-- ========== --- ========== -->
 
