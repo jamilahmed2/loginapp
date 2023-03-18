@@ -7,14 +7,13 @@ export async function usernameValidate(values) {
     return errors
 }
 
-function usernameVerify(error = {}, values) {
-    if (!values.username) {
-        error.username = toast.error("Username Required!")
-    } else if (values.username.includes(" ")) {
-        error.username = toast.error("Invalid Username")
-    }
 
-    return error;
+// -----> Validate  Signup <-----
+export async function signUpValidate(values) {
+    const errors = usernameVerify({}, values);
+    passwordVerify(errors, values);
+    emailVerify(errors,values);
+    return errors
 }
 
 // -----> Validate  Password <-----
@@ -24,6 +23,18 @@ export async function passwordValidate(values) {
     return errors
 }
 
+// -----> Validate  resetPassword <-----
+export async function resetPasswordValidation(values) {
+    const errors = passwordVerify({}, values)
+    if (values.password !== values.confirm_pwd) {
+        errors.exist = toast.error("Password not matched")
+    }
+    return errors
+}
+
+//  ************************************** //
+
+// -----> password verify <-----
 function passwordVerify(error = {}, values) {
 
     const specialChars = /[`@#$%^&*()_+\-=/[\]{};':"\\|,.<>\/?~]/;
@@ -41,11 +52,25 @@ function passwordVerify(error = {}, values) {
     return error;
 }
 
-// -----> Validate  Password <-----
-export async function resetPasswordValidation(values) {
-    const errors = passwordVerify({}, values)
-    if (values.password !== values.confirm_pwd) {
-        errors.exist = toast.error("Password not matched")
+// -----> email verify <-----
+function emailVerify(errors = {}, values) {
+    if (!values.email) {
+        errors.email = toast.error("Email Requred!")
+    } else if (values.email.includes(" ")) {
+        errors.email = toast.error("Wrong Email!")
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,3}$/i.toast(values.email)) {
+        errors.email = toast.error("Invalid Email Address!")
     }
-    return errors
+    return errors;
+}
+
+// -----> username verify <-----
+function usernameVerify(error = {}, values) {
+    if (!values.username) {
+        error.username = toast.error("Username Required!")
+    } else if (values.username.includes(" ")) {
+        error.username = toast.error("Invalid Username")
+    }
+
+    return error;
 }
