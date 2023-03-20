@@ -3,5 +3,11 @@ node_modules
 ./node_modules
 env
 .env
+config.js
+config
+backend/config.js
+backend/config
+./config.js
+config
 ./backend/env
 ./fronted/env
