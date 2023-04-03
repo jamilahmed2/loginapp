@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import connect from "./Database/conn.js";
-
+import router from "./routes/route.js";
 const app = express();
 
 // middleware
@@ -19,17 +19,20 @@ app.get('/', (req, res) => {
     res.status(201).json("Home GET Request")
 });
 
+// api routes
+app.use('/api',router);
+
 // start server only when have a valid connection
 connect().then(() => {
     try {
         // start server
         app.listen(PORT, () => {
-            console.log(`Server Connected to ${PORT}`);
+            console.log(`Server is running on PORT:${PORT}`);
         })
     } catch (error) {
         console.log("Cannot connect to the server")
     }
-}).catch(error=>{
+}).catch(error => {
     console.log("Invalid database connection")
 })
 
