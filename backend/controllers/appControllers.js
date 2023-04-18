@@ -1,5 +1,5 @@
 import UserModel from "../model/User.model.js";
-import bcrypt from "bcryptjs"
+import bcrypt from "bcrypt"
 
 
 /** middleware for verify user */
@@ -14,56 +14,41 @@ export const register = async (req, res) => {
         const { username, password, profile, email } = req.body;
 
         // check the existing user
-        const existUsername = new Promise((resolve, reject) => {
-            UserModel.findOne({ username }, function (err, user) {
-                if (err) reject(new Error(err))
-                if (user) reject({ error: "Please use unique username" });
+        const existUsername = UserModel.findOne({ username });
+        const existEmail = UserModel.findOne({ email });
 
-                resolve();
-            })
-        });
+        const [user, userEmail] = await Promise.all([
+            existUsername,
+            existEmail
+        ]);
 
-        // check for existing email
-        const existEmail = new Promise((resolve, reject) => {
-            UserModel.findOne({ email }, function (err, email) {
-                if (err) reject(new Error(err))
-                if (email) reject({ error: "Please use unique Email" });
+        if (user) {
+            return res.status(400).send({ error: "Please use unique username" });
+        }
 
-                resolve();
-            })
-        });
+        if (userEmail) {
+            return res.status(400).send({ error: "Please use unique email" });
+        }
 
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
 
-        Promise.all([existUsername, existEmail])
-            .then(() => {
-                if (password) {
-                    bcrypt.hash(password, 10)
-                        .then(hashedPassword => {
+            const newUser = new UserModel({
+                username,
+                password: hashedPassword,
+                profile: profile || "",
+                email
+            });
 
-                            const user = new UserModel({
-                                username,
-                                password: hashedPassword,
-                                profile: profile || '',
-                                email
-                            });
+            await newUser.save();
 
-                            // return save result as a response
-                            user.save()
-                                .then(result => res.status(201).send({ msg: "User Register Successfully" }))
-                                .catch(error => res.status(500).send({ error }))
+            return res.status(201).send({ msg: "User registered successfully" });
+        }
 
-                        }).catch(error => {
-                            return res.status(500).send({
-                                error: "Enable to hashed password"
-                            })
-                        })
-                }
-            }).catch(error => {
-                return res.status(500).send({ error })
-            })
-
+        return res.status(400).send({ error: "Password is required" });
     } catch (error) {
-        return res.status(500).send(error)
+        console.log(error);
+        return res.status(500).send({ error });
     }
 }
 
