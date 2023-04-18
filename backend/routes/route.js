@@ -1,6 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
+
 import { createResetSession, generateOTP, getUser, login, register, resetPassword, updateUser, verifyOTP } from "../controllers/appControllers.js";
 
 // POST Methods
@@ -19,4 +20,4 @@ router.route('/createResetSession').get(createResetSession);
 router.route('/updateuser').put(updateUser);
 router.route('/resetPassword').put(resetPassword);
 
-export default router
+export default router;
