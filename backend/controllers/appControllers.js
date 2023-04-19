@@ -106,7 +106,7 @@ export const getUser = async (req, res) => {
     try {
         // if (!username) return res.status(400).send({ error: "Invalid Username" });
 
-        const user = await UserModel.findOne({ username });
+        const user = await UserModel.findOne({ username }).select("-password");
 
         if (!user) return res.status(404).send({ error: "Couldn't Find the User" });
 
@@ -123,7 +123,7 @@ export const getUserByEmail = async (req, res) => {
     try {
         if (!email) return res.status(400).send({ error: "Invalid email" });
 
-        const user = await UserModel.findOne({ email });
+        const user = await UserModel.findOne({ email }).select("-password");
         if (!user) return res.status(404).send({ error: "User not found" });
 
         return res.status(200).send(user);
