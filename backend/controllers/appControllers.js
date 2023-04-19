@@ -2,6 +2,7 @@ import UserModel from "../model/User.model.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import dotenv from 'dotenv'
+import Express from "express";
 
 dotenv.config()
 /** middleware for verify user */
@@ -64,7 +65,7 @@ export const register = async (req, res) => {
     }
 }
 
-// Login
+// Login  POST: http://localhost:5000/api/login 
 export const login = async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -98,10 +99,41 @@ export const login = async (req, res) => {
     }
 }
 
-// GET USER
+// GET USER BY USERNAME
 export const getUser = async (req, res) => {
-    res.json("getuser");
+    const { username } = req.params;
+
+    try {
+        // if (!username) return res.status(400).send({ error: "Invalid Username" });
+
+        const user = await UserModel.findOne({ username });
+
+        if (!user) return res.status(404).send({ error: "Couldn't Find the User" });
+
+        return res.status(200).send(user);
+    } catch (error) {
+        return res.status(500).send({ error: "Internal Server Error" });
+    }
+
 }
+
+// GET USER BY EMAIL
+export const getUserByEmail = async (req, res) => {
+    const { email } = req.params;
+    try {
+        if (!email) return res.status(400).send({ error: "Invalid email" });
+
+        const user = await UserModel.findOne({ email });
+        if (!user) return res.status(404).send({ error: "User not found" });
+
+        return res.status(200).send(user);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ error: "Internal server error" });
+    }
+
+}
+
 
 // UPDATE USER
 export const updateUser = async (req, res) => {
