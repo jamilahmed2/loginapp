@@ -2,13 +2,13 @@ import { Router } from "express";
 const router = Router();
 
 
-import { createResetSession, generateOTP, getUser, login, register, resetPassword, updateUser, verifyOTP } from "../controllers/appControllers.js";
+import { createResetSession, generateOTP, getUser, login, register, resetPassword, updateUser, verifyOTP, verifyUser } from "../controllers/appControllers.js";
 
 // POST Methods
 router.route('/register').post(register);
 // router.route('/registerMail').post();
 router.route('/authenticate').post((req, res) => res.end());
-router.route('/login').post(login);
+router.route('/login').post(verifyUser, login);
 
 // GET Methods
 router.route('/user/:username').get(getUser);

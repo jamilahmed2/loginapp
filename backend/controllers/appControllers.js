@@ -5,8 +5,18 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 /** middleware for verify user */
-export const verifyUser = async (req, res) => {
-    res.json("verifyUser");
+export const verifyUser = async (req, res, next) => {
+    try {
+        const { username } = req.method == "GET" ? req.query : req.body
+
+        // checking user
+        let exist = await UserModel.findOne({ username })
+        if (!exist) return res.status(404).send({ error: "User Not Found" })
+        next();
+    } catch (error) {
+        return res.status(404).send({ error: "Authentication error" });
+    }
+
 }
 
 
