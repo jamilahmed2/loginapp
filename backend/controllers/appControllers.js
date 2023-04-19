@@ -1,7 +1,9 @@
 import UserModel from "../model/User.model.js";
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
+import dotenv from 'dotenv'
 
-
+dotenv.config()
 /** middleware for verify user */
 export const verifyUser = async (req, res) => {
     res.json("verifyUser");
@@ -23,11 +25,11 @@ export const register = async (req, res) => {
         ]);
 
         if (user) {
-            return res.status(400).send({ error: "Please use unique username" });
+            return res.status(400).send({ error: "Username already existed" });
         }
 
         if (userEmail) {
-            return res.status(400).send({ error: "Please use unique email" });
+            return res.status(400).send({ error: "Email already existed" });
         }
 
         if (password) {
@@ -54,7 +56,36 @@ export const register = async (req, res) => {
 
 // Login
 export const login = async (req, res) => {
-    res.json("login");
+    const { username, password } = req.body;
+    try {
+        UserModel.findOne({ username })
+            .then(user => {
+                bcrypt.compare(password, user.password)
+                    .then(passwordCheck => {
+                        if (!passwordCheck) return res.status(400).send({ error: "Don't have password" });
+
+                        // create jwt token
+                        const token = jwt.sign({
+                            userId: user._userId,
+                            username: user.username
+                        }, process.env.JWT_SECERET)
+
+                        return res.status(201).send({
+                            msg: "Login Successful..!",
+                            username: user.username,
+                            token
+                        })
+                    })
+                    .catch(error => {
+                        return res.status(400).send({ error: "password not matched" });
+                    })
+            })
+            .catch(error => {
+                return res.status(404).send({ error: "Username not found" });
+            })
+    } catch (error) {
+        return res.status(500).send({ error });
+    }
 }
 
 // GET USER
