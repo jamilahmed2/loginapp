@@ -137,8 +137,26 @@ export const getUserByEmail = async (req, res) => {
 
 // UPDATE USER
 export const updateUser = async (req, res) => {
-    res.json("updateUser");
+    try {
+        const id = req.query.id;
+        if (!id) {
+            return res.status(401).send({ error: "User ID not found" });
+        }
+
+        const body = req.body;
+
+        const updatedUser = await UserModel.findByIdAndUpdate(id, body, { new: true }).select("-password");
+
+        if (!updatedUser) {
+            return res.status(404).send({ error: "User not found" });
+        }
+
+        return res.status(201).send({ message: "User updated successfully"});
+    } catch (error) {
+        return res.status(500).send({ error:"Internal error" });
+    }
 }
+
 
 // GENERATE OTP
 export const generateOTP = async (req, res) => {
