@@ -4,10 +4,11 @@ const router = Router();
 
 import { createResetSession, generateOTP, getUser, login, register, resetPassword, updateUser, verifyOTP, verifyUser } from "../controllers/appControllers.js";
 import Auth, { localVariables } from "../middleware/auth.js";
+import { registerMail } from "../controllers/mailer.js";
 
 // POST Methods
 router.route('/register').post(register);
-// router.route('/registerMail').post();
+router.route('/registerMail').post(registerMail);
 router.route('/authenticate').post((req, res) => res.end());
 router.route('/login').post(verifyUser, login);
 
