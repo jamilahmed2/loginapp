@@ -2,7 +2,7 @@ import UserModel from "../model/User.model.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import dotenv from 'dotenv'
-import Express from "express";
+import mongoose from "mongoose";
 
 dotenv.config()
 /** middleware for verify user */
@@ -77,13 +77,15 @@ export const login = async (req, res) => {
 
                         // create jwt token
                         const token = jwt.sign({
-                            userId: user._userId,
-                            username: user.username
+                            id: user._id,
+                            email: user.email,
+                            // username: user.username
                         }, process.env.JWT_SECERET)
 
                         return res.status(201).send({
-                            msg: "Login Successful..!",
-                            username: user.username,
+                            // msg: "Login Successful..!",
+                            // username: user.username,
+                            email: user.email,
                             token
                         })
                     })
@@ -138,22 +140,26 @@ export const getUserByEmail = async (req, res) => {
 // UPDATE USER
 export const updateUser = async (req, res) => {
     try {
-        const id = req.query.id;
-        if (!id) {
+        // const id = req.query.id;
+        const { id: _id } = req.params;
+
+        if (!_id) {
             return res.status(401).send({ error: "User ID not found" });
         }
 
+
         const body = req.body;
 
-        const updatedUser = await UserModel.findByIdAndUpdate(id, body, { new: true }).select("-password");
+        const updatedUser = await UserModel.findByIdAndUpdate(_id, body, { new: true }).select("-password");
 
         if (!updatedUser) {
             return res.status(404).send({ error: "User not found" });
         }
 
-        return res.status(201).send({ message: "User updated successfully"});
+        return res.status(201).send({ message: "User updated successfully" });
     } catch (error) {
-        return res.status(500).send({ error:"Internal error" });
+        console.log(error)
+        return res.status(500).send({ error: "Internal error" });
     }
 }
 

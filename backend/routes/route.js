@@ -2,7 +2,8 @@ import { Router } from "express";
 const router = Router();
 
 
-import { createResetSession, generateOTP, getUser,  getUserByEmail,  login, register, resetPassword, updateUser, verifyOTP, verifyUser } from "../controllers/appControllers.js";
+import { createResetSession, generateOTP, getUser, getUserByEmail, login, register, resetPassword, updateUser, verifyOTP, verifyUser } from "../controllers/appControllers.js";
+import Auth from "../middleware/auth.js";
 
 // POST Methods
 router.route('/register').post(register);
@@ -18,7 +19,7 @@ router.route('/verifyOTP').get(verifyOTP);
 router.route('/createResetSession').get(createResetSession);
 
 // Put Methods
-router.route('/updateuser').put(updateUser);
+router.route('/updateuser').put(Auth, updateUser);
 router.route('/resetPassword').put(resetPassword);
 
 export default router;
