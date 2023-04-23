@@ -2,7 +2,7 @@ import UserModel from "../model/User.model.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import dotenv from 'dotenv'
-import mongoose from "mongoose";
+import otpGenerator from 'otp-generator'
 
 dotenv.config()
 /** middleware for verify user */
@@ -78,14 +78,14 @@ export const login = async (req, res) => {
                         // create jwt token
                         const token = jwt.sign({
                             id: user._id,
-                            email: user.email,
-                            // username: user.username
+                            // email: user.email,
+                            username: user.username
                         }, process.env.JWT_SECERET)
 
                         return res.status(201).send({
                             // msg: "Login Successful..!",
-                            // username: user.username,
-                            email: user.email,
+                            username: user.username,
+                            // email: user.email,
                             token
                         })
                     })
@@ -119,22 +119,7 @@ export const getUser = async (req, res) => {
 
 }
 
-// GET USER BY EMAIL
-export const getUserByEmail = async (req, res) => {
-    const { email } = req.params;
-    try {
-        if (!email) return res.status(400).send({ error: "Invalid email" });
 
-        const user = await UserModel.findOne({ email }).select("-password");
-        if (!user) return res.status(404).send({ error: "User not found" });
-
-        return res.status(200).send(user);
-    } catch (error) {
-        console.error(error);
-        return res.status(500).send({ error: "Internal server error" });
-    }
-
-}
 
 
 // UPDATE USER
@@ -166,17 +151,28 @@ export const updateUser = async (req, res) => {
 
 // GENERATE OTP
 export const generateOTP = async (req, res) => {
-    res.json("generateOTP");
+    req.app.locals.OTP = await otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false })
+    res.status(201).send({ code: req.app.locals.OTP })
 }
 
 //VERIFY OTP
 export const verifyOTP = async (req, res) => {
-    res.json("verifyOTP");
+    const { code } = req.query;
+    if (parseInt(req.app.locals.OTP) === parseInt(code)) {
+        req.app.locals.OTP = null;  //reset otp
+        req.app.locals.resetSession = true; //start session for reset password 
+        return res.status(201).send({ msg: "Verified Successfully" })
+    }
+    return res.status(400).send({ msg: "Invalid OTP" })
 }
 
 // create and reset OTP
 export const createResetSession = async (req, res) => {
-    res.json("create reset session");
+    if (req.app.locals.resetSession) {
+        req.app.locals.resetSession = false; // access only once
+        return res.status(201).send({ msg: "Access granted..!" })
+    }
+    return res.status(404).send({msg:"Session expired!"})
 }
 
 // RESET PASSWORD  
