@@ -69,37 +69,26 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
     const { username, password } = req.body;
     try {
-        UserModel.findOne({ username })
-            .then(user => {
-                bcrypt.compare(password, user.password)
-                    .then(passwordCheck => {
-                        if (!passwordCheck) return res.status(400).send({ error: "Don't have password" });
-
-                        // create jwt token
-                        const token = jwt.sign({
-                            id: user._id,
-                            // email: user.email,
-                            username: user.username
-                        }, process.env.JWT_SECERET)
-
-                        return res.status(201).send({
-                            // msg: "Login Successful..!",
-                            username: user.username,
-                            // email: user.email,
-                            token
-                        })
-                    })
-                    .catch(error => {
-                        return res.status(400).send({ error: "password not matched" });
-                    })
-            })
-            .catch(error => {
-                return res.status(404).send({ error: "Username not found" });
-            })
+        const user = await UserModel.findOne({ username });
+        if (!user) {
+            return res.status(404).send({ error: "Username not found" });
+        }
+        const passwordCheck = await bcrypt.compare(password, user.password);
+        if (!passwordCheck) {
+            return res.status(401).send({ error: "Invalid credentials" });
+        }
+        const token = jwt.sign({
+            id: user._id,
+            username: user.username
+        }, process.env.JWT_SECERET);
+        return res.status(200).send({
+            username: user.username,
+            token
+        });
     } catch (error) {
         return res.status(500).send({ error });
     }
-}
+};
 
 // GET USER BY USERNAME
 export const getUser = async (req, res) => {
@@ -172,10 +161,37 @@ export const createResetSession = async (req, res) => {
         req.app.locals.resetSession = false; // access only once
         return res.status(201).send({ msg: "Access granted..!" })
     }
-    return res.status(404).send({msg:"Session expired!"})
+    return res.status(404).send({ msg: "Session expired!" })
 }
 
 // RESET PASSWORD  
 export const resetPassword = async (req, res) => {
-    res.json("reset pass");
+    try {
+        // check if valid session only then user update the password
+        if (!req.app.locals.resetSession) {
+            return res.status(404).send({ msg: "Session expired!" })
+        }
+        const { username, password } = req.body;
+
+        try {
+            const user = await UserModel.findOne({ username });
+            if (!user) {
+                return res.status(404).send({ msg: "username not found" });
+            }
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const result = await UserModel.updateOne({ username: user.username }, {
+                password: hashedPassword
+            }).exec();
+
+            req.app.locals.resetSession = false; // access only once
+            return res.status(201).send({ msg: "record updated" });
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    } catch (error) {
+        return res.status(401).send(error);
+    }
 }
+
+
