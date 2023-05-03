@@ -1,24 +1,37 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate,Link } from 'react-router-dom'
 import avatar from '../assests/profile.png'
 import styles from '../styles/Username.module.css'
 import { Toaster } from 'react-hot-toast'
 // <!-- ========== Using Formik To acces form data ========== -->
 import { useFormik } from 'formik'
 import { usernameValidate } from '../helper/Validate'
-// <!-- ========== --- ========== -->
+// <!-- ========== zustand store ========== -->
+import { userAuthStore } from '../store/store'
+
 
 export const Username = () => {
+    // to access values in console
+    // const setUsername = userAuthStore(state => console.log(state.username))
+    // const username = userAuthStore(state => console.log(state.auth.username))
+
+    // useEffect(() => {
+    //   console.log(username)
+    // }, [])
+    const navigate = useNavigate();
+    const setUsername = userAuthStore((state) => (state.setUsername));
 
     const formik = useFormik({
         initialValues: {
-            username: '',
+            username: ''
         },
         validate: usernameValidate,
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async values => {
-            console.log(values)
+            setUsername(values.username);
+            // console.log(values)
+            navigate('/password')
         }
     })
 
@@ -44,7 +57,7 @@ export const Username = () => {
 
                         <div className="textbox flex flex-col items-center gap-6">
                             <input {...formik.getFieldProps('username')} className={styles.textbox} type="text" placeholder='Username' />
-                            <button type='submit' className={styles.btn}>Lets go</button>
+                            <button type='submit' className={styles.btn} >Lets go</button>
                         </div>
 
                         <div className="text-center py-4">
