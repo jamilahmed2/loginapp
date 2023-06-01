@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast'
 import { useFormik } from 'formik'
 import { usernameValidate } from '../helper/Validate'
 // <!-- ========== zustand store ========== -->
-import { userAuthStore } from '../store/store'
+import { useAuthStore } from '../store/store'
 
 
 export const Username = () => {
@@ -19,7 +19,7 @@ export const Username = () => {
     //   console.log(username)
     // }, [])
     const navigate = useNavigate();
-    const setUsername = userAuthStore((state) => (state.setUsername));
+    const setUsername = useAuthStore((state) => (state.setUsername));
 
     const formik = useFormik({
         initialValues: {

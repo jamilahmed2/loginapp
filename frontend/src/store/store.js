@@ -1,6 +1,6 @@
 import create from 'zustand'
 
-export const userAuthStore = create((set) => ({
+export const useAuthStore = create((set) => ({
   auth: {
     username: '',
   },

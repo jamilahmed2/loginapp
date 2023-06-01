@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react';
+import ENV from '../config';
 
-axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN;
+axios.defaults.baseURL = ENV.SERVER_DOMAIN
 
 // custom hook
 export default function useFetch(query) {

@@ -5,12 +5,18 @@ import styles from '../styles/Username.module.css'
 import { Toaster } from 'react-hot-toast'
 // <!-- ========== Using Formik To acces form data ========== -->
 import { useFormik } from 'formik'
-import { passwordValidate } from '../helper/Validate'
 // <!-- ========== --- ========== -->
+import { passwordValidate } from '../helper/Validate'
+import useFetch from '../hooks/fetch.hook.js'
+import { useAuthStore } from '../store/store.js'
 
 export const Password = () => {
   const [passType, setPassType] = useState("password");
   const [showPassword, setShowPassword] = useState("");
+
+  const { username } = useAuthStore(state => state.auth)
+  const [{ isLoading, serverError, apiData }] = useFetch(`/user/${username}`)
+
 
   const handleShowPassword = () => {
     if (passType === "password") {
@@ -19,7 +25,6 @@ export const Password = () => {
     }
     setPassType("password")
   };
-
 
   const formik = useFormik({
     initialValues: {
@@ -33,6 +38,9 @@ export const Password = () => {
     }
   })
 
+  if (isLoading) return <h1 className='text-2xl font-bold'>Loading...!</h1>
+  if (serverError) return <h1 className='text-xl font-bold text-red-500'>{serverError.message}</h1>
+
   return (
     <>
       <div className="container mx-auto">
@@ -43,7 +51,7 @@ export const Password = () => {
           <div className={styles.glass}>
 
             <div className="title flex flex-col items-center">
-              <h4 className='text-4xl font-bold'>Password</h4>
+              <h4 className='text-4xl font-bold'>{apiData?.firstName || apiData?.username}</h4>
               <span className=' text-center text-gray-500'>
                 Enter Your Password.
               </span>
@@ -51,7 +59,7 @@ export const Password = () => {
 
             <form className="py-1" onSubmit={formik.handleSubmit}>
               <div className='profile flex justify-center py-4'>
-                <img src={avatar} className={styles.profile_img} alt="avatar" />
+                <img src={apiData?.profile || avatar} className={styles.profile_img} alt="avatar" />
               </div>
               <span className='p-icon'><i class="fa-regular fa-eye" style={{ cursor: "pointer" }} onClick={handleShowPassword}></i></span>
               <div className="textbox flex flex-col items-center gap-6">

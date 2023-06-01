@@ -1,6 +1,6 @@
 import axios from 'axios'
-
-axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN
+import ENV from '../config.js'
+axios.defaults.baseURL = ENV.SERVER_DOMAIN
 // Make api req
 
 // authenticate
@@ -26,7 +26,7 @@ export async function getUser({ username }) {
 // user register
 export async function registerUser(credentials) {
     try {
-        const { data: { msg }, status } = await axios.post(`/api/register/`, credentials)
+        const { data: { msg }, status } = await axios.post(`/api/register`, credentials)
         let { username, email } = credentials;
         // send mail
         if (status === 201) {
