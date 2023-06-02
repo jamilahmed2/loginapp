@@ -2,45 +2,45 @@ import { toast } from "react-hot-toast";
 import { authenticate } from './helper.js'
 // -----> Validate  Username <-----
 export async function usernameValidate(values) {
-    const errors = usernameVerify({}, values)
+    const error = usernameVerify({}, values)
     // checking user exists or not
     if (values.username) {
         const { status } = await authenticate(values.username)
         if (status !== 200) {
-            errors.exist = toast.error("user doesn't exists...!");
+            error.exist = toast.error("user doesn't exists...!");
         }
     }
-    return errors
+    return error
 }
 
 // -----> Validate  Signup <-----
 export async function signUpValidate(values) {
-    const errors = usernameVerify({}, values);
-    passwordVerify(errors, values);
-    emailVerify(errors, values);
-    return errors
+    const error = usernameVerify({}, values);
+    passwordVerify(error, values);
+    emailVerify(error, values);
+    return error
 }
 
 // -----> Validate  Password <-----
 export async function passwordValidate(values) {
-    const errors = passwordVerify({}, values)
+    const error = passwordVerify({}, values)
 
-    return errors
+    return error
 }
 
 // -----> Validate  resetPassword <-----
 export async function resetPasswordValidation(values) {
-    const errors = passwordVerify({}, values)
+    const error = passwordVerify({}, values)
     if (values.password !== values.confirm_pwd) {
-        errors.exist = toast.error("Password not matched")
+        error.exist = toast.error("Password not matched")
     }
-    return errors
+    return error
 }
 
 // -----> Validate  Profile Page <-----
 export async function profileValidation(values) {
-    const errors = emailVerify({}, values);
-    return errors;
+    const error = emailVerify({}, values);
+    return error;
 }
 
 //  ************************************** //
@@ -64,15 +64,16 @@ function passwordVerify(error = {}, values) {
 }
 
 // -----> email verify <-----
-function emailVerify(errors = {}, values) {
-    if (!values.email) {
-        errors.email = toast.error("Email Requred!")
-    } else if (values.email.includes(" ")) {
-        errors.email = toast.error("Wrong Email!")
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,3}$/i.toast(values.email)) {
-        errors.email = toast.error("Invalid Email Address!")
+function emailVerify(error ={}, values){
+    if(!values.email){
+        error.email = toast.error("Email Required...!");
+    }else if(values.email.includes(" ")){
+        error.email = toast.error("Wrong Email...!")
+    }else if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)){
+        error.email = toast.error("Invalid email address...!")
     }
-    return errors;
+
+    return error;
 }
 
 // -----> username verify <-----

@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import avatar from '../assests/profile.png'
 import styles from '../styles/Username.module.css'
-import { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 // <!-- ========== Using Formik To acces form data ========== -->
 import { useFormik } from 'formik'
-import {  signUpValidate } from '../helper/Validate'
+import { signUpValidate } from '../helper/Validate'
 import convertToBase64 from '../helper/Convert'
+import { registerUser } from '../helper/helper'
 // <!-- ========== --- ========== -->
 
 export const Register = () => {
+  const navigate = useNavigate();
   const [passType, setPassType] = useState("password");
   const [showPassword, setShowPassword] = useState("");
 
@@ -33,7 +35,14 @@ export const Register = () => {
     validateOnChange: false,
     onSubmit: async values => {
       values = await Object.assign(values, { profile: file || '' })
-      console.log(values)
+      // console.log(values)
+      let registerPromise = registerUser(values)
+      toast.promise(registerPromise, {
+        loading: 'Creating...',
+        success: <b>Register Successfully...!</b>,
+        error: <b>Could not Register.</b>
+      })
+      registerPromise.then(function () { navigate('/') })
     }
   })
 

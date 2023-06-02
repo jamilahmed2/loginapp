@@ -32,7 +32,7 @@ export const register = async (req, res) => {
 
         const [user, userEmail] = await Promise.all([
             existUsername,
-            existEmail
+            existEmail,
         ]);
 
         if (user) {
@@ -50,7 +50,7 @@ export const register = async (req, res) => {
                 username,
                 password: hashedPassword,
                 profile: profile || "",
-                email
+                email,
             });
 
             await newUser.save();

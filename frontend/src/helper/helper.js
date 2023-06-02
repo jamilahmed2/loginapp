@@ -1,7 +1,8 @@
 import axios from 'axios'
 import ENV from '../config.js'
-axios.defaults.baseURL = ENV.SERVER_DOMAIN
+
 // Make api req
+axios.defaults.baseURL = ENV.SERVER_DOMAIN
 
 // authenticate
 export async function authenticate(username) {
@@ -24,13 +25,15 @@ export async function getUser({ username }) {
 
 
 // user register
-export async function registerUser(credentials) {
+export async function registerUser(credentials){
     try {
-        const { data: { msg }, status } = await axios.post(`/api/register`, credentials)
+        const { data : { msg }, status } = await axios.post(`/api/register`, credentials);
+
         let { username, email } = credentials;
-        // send mail
-        if (status === 201) {
-            await axios.post(`/register/registerMail`, { username, userEmail: email, text: msg })
+
+        /** send email */
+        if(status === 201){
+            await axios.post('/api/registerMail', { username, userEmail : email, text : msg})
         }
 
         return Promise.resolve(msg)
