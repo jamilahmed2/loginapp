@@ -8,6 +8,7 @@ import { Password } from './components/Password';
 import { Reset } from './components/Reset';
 import { Recovery } from './components/Recovery';
 import { NotFound } from './components/NotFound';
+import { AuthorizeUser, ProtectRoute } from './middleware/auth';
 
 // <!-- ========== Root Routes  ========== -->
 const router = createBrowserRouter([
@@ -21,11 +22,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/password',
-    element: <Password></Password>
+    element: <ProtectRoute><Password /></ProtectRoute>
   },
   {
     path: '/profile',
-    element: <Profile></Profile>
+    element: <AuthorizeUser><Profile /></AuthorizeUser>
   },
   {
     path: '/reset',
@@ -47,7 +48,7 @@ function App() {
   // <!-- ========== ---  ========== -->
   return (
     <main>
-      <RouterProvider  router={router}></RouterProvider>
+      <RouterProvider router={router}></RouterProvider>
     </main>
   );
 }
