@@ -44,10 +44,10 @@ export async function registerUser(credentials){
 
 
 // login function
-export async function verifyPassword({ username, passowrd }) {
+export async function verifyPassword({ username, password }) {
     try {
         if (username) {
-            const { data } = await axios.post('/api/login', { username, passowrd })
+            const { data } = await axios.post('/api/login', { username, password })
             return Promise.resolve({ data });
         }
     } catch (error) {

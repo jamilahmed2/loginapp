@@ -1,16 +1,19 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import avatar from '../assests/profile.png'
 import styles from '../styles/Username.module.css'
-import { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 // <!-- ========== Using Formik To acces form data ========== -->
 import { useFormik } from 'formik'
 // <!-- ========== --- ========== -->
 import { passwordValidate } from '../helper/Validate'
 import useFetch from '../hooks/fetch.hook.js'
 import { useAuthStore } from '../store/store.js'
+import { verifyPassword } from '../helper/helper'
+
 
 export const Password = () => {
+  const navigate = useNavigate();
   const [passType, setPassType] = useState("password");
   const [showPassword, setShowPassword] = useState("");
 
@@ -34,7 +37,17 @@ export const Password = () => {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async values => {
-      console.log(values)
+      let loginPromise = verifyPassword({ username, password : values.password })
+      toast.promise(loginPromise, {
+        loading: <b>Checking..!</b>,
+        success: <b>Logged in successfully</b>,
+        error: <b>Login failed</b>
+      })
+      loginPromise.then(res => {
+        let { token } = res.data;
+        localStorage.setItem('token', token)
+        navigate('/profile');
+      })
     }
   })
 
