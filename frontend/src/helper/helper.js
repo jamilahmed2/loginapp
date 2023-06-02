@@ -1,8 +1,18 @@
 import axios from 'axios'
 import ENV from '../config.js'
+import jwt_decode from 'jwt-decode'
 
 // Make api req
 axios.defaults.baseURL = ENV.SERVER_DOMAIN
+
+/** To get username from Token */
+export async function getUsername(){
+    const token = localStorage.getItem('token')
+    if(!token) return Promise.reject("Cannot find Token");
+    let decode = jwt_decode(token)
+    // console.log(decode)
+    return decode;
+}
 
 // authenticate
 export async function authenticate(username) {

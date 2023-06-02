@@ -2,30 +2,44 @@ import React, { useState } from 'react'
 import avatar from '../assests/profile.png'
 import styles from '../styles/Username.module.css'
 import extend from '../styles/Profile.module.css'
-import { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 // <!-- ========== Using Formik To acces form data ========== -->
 import { useFormik } from 'formik'
-import {  profileValidation } from '../helper/Validate'
+import { profileValidation } from '../helper/Validate'
 import convertToBase64 from '../helper/Convert'
-// <!-- ========== --- ========== -->
+import useFetch from '../hooks/fetch.hook.js'
+import { useAuthStore } from '../store/store.js'
+import { updateUser } from '../helper/helper'
+import { useNavigate } from 'react-router-dom'
+
 
 export const Profile = () => {
-  const [file, setFile] = useState()
+  const navigate = useNavigate();
+  const [file, setFile] = useState();
+  const [{ isLoading, serverError, apiData }] = useFetch()
 
   const formik = useFormik({
     initialValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      mobile: '',
-      address: '',
+      firstName: apiData?.firstName || '',
+      lastName: apiData?.lastName || '',
+      email: apiData?.email || '',
+      mobile: apiData?.mobile || '',
+      address: apiData?.address || ''
     },
+    enableReinitialize: true,
     validate: profileValidation,
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async values => {
-      values = await Object.assign(values, { profile: file || '' })
-      console.log(values)
+      values = await Object.assign(values, { profile: file || apiData?.profile || '' })
+      let updatePromise = updateUser(values);
+
+      toast.promise(updatePromise, {
+        loading: 'Updating...',
+        success: <b>Update Successfully...!</b>,
+        error: <b>Could not Update!</b>
+      });
+
     }
   })
 
@@ -34,6 +48,13 @@ export const Profile = () => {
     setFile(base64)
   }
 
+  // logout handler function
+  const userLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/')
+  }
+  if (isLoading) return <h1 className='text-2xl font-bold'>Loading...!</h1>
+  if (serverError) return <h1 className='text-xl font-bold text-red-500'>{serverError.message}</h1>
   return (
     <>
       <div className="container mx-auto">
@@ -53,7 +74,7 @@ export const Profile = () => {
             <form className="py-1" onSubmit={formik.handleSubmit}>
               <div className='profile flex justify-center py-4'>
                 <label htmlFor="profile">
-                  <img src={file || avatar} className={`${styles.profile_img} ${extend.profile_img}`} alt="avatar" />
+                  <img src={apiData?.profile || file || avatar} className={`${styles.profile_img} ${extend.profile_img}`} alt="avatar" />
                 </label>
                 <input type="file" id='profile' name='profile' onChange={onUpload} />
               </div>
@@ -67,11 +88,11 @@ export const Profile = () => {
                   <input type='email'  {...formik.getFieldProps('email')} className={styles.textbox} placeholder='Email' />
                 </div>
                 <input type='text'  {...formik.getFieldProps('address')} className={styles.textbox} placeholder='Address' />
-                <button type='submit' className={styles.btn}>Update</button>
+                <button className={styles.btn} type='submit'>Update</button>
               </div>
 
               <div className="text-center py-4">
-                <span className='text-grey-500'>Come back later? <button className='text-red-500'>Log out</button></span>
+                <span className='text-grey-500'>Come back later? <button onClick={userLogout} className='text-red-500'>Log out</button></span>
               </div>
             </form>
           </div>
