@@ -6,9 +6,9 @@ import jwt_decode from 'jwt-decode'
 axios.defaults.baseURL = ENV.SERVER_DOMAIN
 
 /** To get username from Token */
-export async function getUsername(){
+export async function getUsername() {
     const token = localStorage.getItem('token')
-    if(!token) return Promise.reject("Cannot find Token");
+    if (!token) return Promise.reject("Cannot find Token");
     let decode = jwt_decode(token)
     // console.log(decode)
     return decode;
@@ -35,15 +35,15 @@ export async function getUser({ username }) {
 
 
 // user register
-export async function registerUser(credentials){
+export async function registerUser(credentials) {
     try {
-        const { data : { msg }, status } = await axios.post(`/api/register`, credentials);
+        const { data: { msg }, status } = await axios.post(`/api/register`, credentials);
 
         let { username, email } = credentials;
 
         /** send email */
-        if(status === 201){
-            await axios.post('/api/registerMail', { username, userEmail : email, text : msg})
+        if (status === 201) {
+            await axios.post('/api/registerMail', { username, userEmail: email, text: msg })
         }
 
         return Promise.resolve(msg)
@@ -86,7 +86,7 @@ export async function generateOTP(username) {
         // send mail with otp
         if (status === 201) {
             let { data: { email } } = await getUser({ username })
-            let text = `Your Password Recovery OTP is ${code}. Verify and recover your password.`
+            let text = `Your Password Recovery OTP is <b>${code}</b> . Verify and recover your password.`
             await axios.post('/api/registerMail', { username, userEmail: email, text, subject: "Password Recovery OTP." })
         }
 
