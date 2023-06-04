@@ -158,8 +158,8 @@ export const verifyOTP = async (req, res) => {
 // create and reset OTP
 export const createResetSession = async (req, res) => {
     if (req.app.locals.resetSession) {
-        req.app.locals.resetSession = false; // access only once
-        return res.status(201).send({ msg: "Access granted..!" })
+        // req.app.locals.resetSession = false; // access only once
+        return res.status(201).send({ flag: req.app.locals.resetSession})
     }
     return res.status(404).send({ msg: "Session expired!" })
 }

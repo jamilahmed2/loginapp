@@ -15,7 +15,7 @@ export const Recovery = () => {
   
     generateOTP(username).then((generatedOTP) => {
       if (isMounted && generatedOTP) {
-        console.log(generatedOTP);
+        // console.log(generatedOTP);
         toast.success('OTP has been sent to your email');
       }
     }).catch(() => {
@@ -47,7 +47,7 @@ export const Recovery = () => {
   const resendOTP = async () => {
     try {
       const generatedOTP = await generateOTP(username);
-      console.log(generatedOTP);
+      // console.log(generatedOTP);
       toast.success('OTP sent to your email');
     } catch (error) {
       toast.error('Some error occurred. Please try again.');

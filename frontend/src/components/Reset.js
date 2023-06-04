@@ -1,14 +1,20 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import avatar from '../assests/profile.png'
 import styles from '../styles/Username.module.css'
-import { Toaster } from 'react-hot-toast'
-// <!-- ========== Using Formik To acces form data ========== -->
+import { Toaster, toast } from 'react-hot-toast'
 import { useFormik } from 'formik'
 import { resetPasswordValidation } from '../helper/Validate'
-// <!-- ========== --- ========== -->
+import { resetPassword } from '../helper/helper'
+import { useAuthStore } from '../store/store'
+import { useNavigate } from 'react-router-dom'
+import useFetch from '../hooks/fetch.hook'
 
 export const Reset = () => {
+
+  const { username } = useAuthStore(state => state.auth);
+  const navigate = useNavigate();
+  const [{ isLoading, apiData, status, serverError }] = useFetch('createResetSession')
   const [passType, setPassType] = useState("password");
   const [showPassword, setShowPassword] = useState("");
 
@@ -22,17 +28,32 @@ export const Reset = () => {
 
 
   const formik = useFormik({
-    initialValues: {
-      password: '',
-      confirm_pwd: '',
+    initialValues : {
+      password : '',
+      confirm_pwd: ''
     },
-    validate: resetPasswordValidation,
+    validate : resetPasswordValidation,
     validateOnBlur: false,
     validateOnChange: false,
-    onSubmit: async values => {
-      console.log(values)
+    onSubmit : async values => {
+      
+      let resetPromise = resetPassword({ username, password: values.password })
+
+      toast.promise(resetPromise, {
+        loading: 'Updating...',
+        success: <b>Reset Successfully...!</b>,
+        error : <b>Could not Reset!</b>
+      });
+
+      resetPromise.then(function(){ navigate('/password') })
+
     }
   })
+
+
+  if(isLoading) return <h1 className='text-2xl font-bold'>isLoading</h1>;
+  if(serverError) return <h1 className='text-xl text-red-500'>{serverError.message}</h1>
+  if(status && status !== 201) return <Navigate to={'/password'} replace={true}></Navigate>
 
   return (
     <>
