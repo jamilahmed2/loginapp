@@ -3,38 +3,67 @@ import cors from "cors";
 import morgan from "morgan";
 import connect from "./Database/conn.js";
 import router from "./routes/route.js";
-import GeoIP from 'geoip-lite';
-// import UserVisit from './model/rou.js';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import GeoIP from "geoip-lite";
+import requestIp from "request-ip";
+import UserVisit from "./model/UserVisit.js";
+
 const app = express();
 
-// middleware
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+// Middleware
 app.use(express.json());
 app.use(cors());
 app.use(morgan('tiny'));
-app.disable('x-powered-by'); // less hacker know about our stack
+app.disable('x-powered-by'); // less information about our stack
 
+// IP tracking middleware
+app.use((req, res, next) => {
+    const ipAddress = requestIp.getClientIp(req);
+    const location = GeoIP.lookup(ipAddress);
+  
+    const userVisit = new UserVisit({
+      ipAddress: ipAddress,
+      location: location ? `${location.city}, ${location.country}` : 'Unknown',
+      timestamp: new Date()
+    });
+  
+    userVisit.save()
+      .then(() => next())
+      .catch((error) => {
+        console.error('Error saving user visit:', error);
+        res.sendStatus(500);
+      });
+  });
 
-const PORT = 5000;
+const PORT = process.env.POST || 5000;
 
 // HTTP GET Request
-app.get('/', (req, res) => {
-    res.status(201).json("Home GET Request")
+// app.get('/', (req, res) => {
+//     res.status(201).json("Home GET Request");
+// });
+
+// API routes
+app.use('/api', router);
+
+// static files
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+app.get('*', function (req, res) {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
 
-// api routes
-app.use('/api',router);
-
-// start server only when have a valid connection
-connect().then(() => {
-    try {
-        // start server
+// Start server only when there is a valid connection
+connect()
+    .then(() => {
         app.listen(PORT, () => {
             console.log(`Server is running on PORT:${PORT}`);
-        })
-    } catch (error) {
-        console.log("Cannot connect to the server")
-    }
-}).catch(error => {
-    console.log("Invalid database connection")
-})
-
+        });
+    })
+    .catch((error) => {
+        console.log("Invalid database connection");
+    });

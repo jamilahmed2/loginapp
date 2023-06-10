@@ -4,7 +4,6 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import dotenv from 'dotenv'
 import otpGenerator from 'otp-generator'
-import GeoIP from 'geoip-lite';
 dotenv.config()
 /** middleware for verify user */
 export const verifyUser = async (req, res, next) => {
@@ -193,24 +192,3 @@ export const resetPassword = async (req, res) => {
     }
 }
 
-
-// collect ip address
-export const ipAddress = async (req, res) => {
-
-    const ipAddress = req.ip;
-    const location = GeoIP.lookup(ipAddress);
-
-    const userVisit = new UserVisit({
-        ipAddress: ipAddress,
-        location: location ? `${location.city}, ${location.country}` : 'Unknown',
-        timestamp: new Date()
-    });
-
-    userVisit.save()
-        .then(() => res.sendStatus(200))
-        .catch((error) => {
-            console.error('Error saving user visit:', error);
-            res.sendStatus(500);
-        });
-
-}

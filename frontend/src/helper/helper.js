@@ -1,9 +1,10 @@
 import axios from 'axios'
-import ENV from '../config.js'
+// import ENV from '../config'
 import jwt_decode from 'jwt-decode'
 
 // Make api req
-axios.defaults.baseURL = ENV.SERVER_DOMAIN
+// axios.defaults.baseURL = ENV.SERVER_DOMAIN
+axios.defaults.baseURL = 'http://localhost:5000'
 
 /** To get username from Token */
 export async function getUsername() {

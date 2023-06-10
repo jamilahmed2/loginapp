@@ -1,10 +1,11 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react';
-import ENV from '../config';
 import { getUsername } from '../helper/helper';
+// import ENV from '../config'
 
 // api reqst
-axios.defaults.baseURL = ENV.SERVER_DOMAIN
+// axios.defaults.baseURL = ENV.SERVER_DOMAIN
+axios.defaults.baseURL = 'http://localhost:5000'
 
 // custom hook
 export default function useFetch(query){
@@ -35,4 +36,4 @@ export default function useFetch(query){
     }, [query]);
 
     return [getData, setData];
-}
+};
