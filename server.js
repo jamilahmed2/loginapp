@@ -52,10 +52,10 @@ const PORT = process.env.PORT || 8080;
 app.use('/api', router);
 
 // static files
-app.use(express.static(path.join(__dirname, './frontend/build')));
+app.use(express.static(path.join(__dirname, './client/build')));
 
 app.get('*', function (req, res) {
-  res.sendFile(path.join(__dirname, './frontend/build/index.html'));
+  res.sendFile(path.join(__dirname, './client/build/index.html'));
 });
 
 // Start server only when there is a valid connection

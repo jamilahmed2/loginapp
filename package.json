@@ -5,14 +5,17 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "build": "webpack",
-    "start": "npm run build && node server.js"
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm start\" \"npm run client\" "
   },
   "author": "jamilahmed2",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
+    "concurrently": "^8.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
