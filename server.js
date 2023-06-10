@@ -49,7 +49,7 @@ const PORT = process.env.PORT || 8080;
 // });
 
 // API routes
-app.use('/api', router);
+app.use('/', router);
 
 // static files
 app.use(express.static(path.join(__dirname, './client/build')));

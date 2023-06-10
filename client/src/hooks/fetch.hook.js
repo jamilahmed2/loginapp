@@ -5,7 +5,7 @@ import { getUsername } from '../helper/helper';
 
 // api reqst
 // axios.defaults.baseURL = ENV.SERVER_DOMAIN
-axios.defaults.baseURL = 'http://localhost:5000'
+// axios.defaults.baseURL = ''
 
 // custom hook
 export default function useFetch(query){
@@ -19,7 +19,7 @@ export default function useFetch(query){
 
                 const { username } = !query ? await getUsername() : '';
                 
-                const { data, status } = !query ? await axios.get(`/api/user/${username}`) : await axios.get(`/api/${query}`);
+                const { data, status } = !query ? await axios.get(`user/${username}`) : await axios.get(`${query}`);
 
                 if(status === 200){
                     setData(prev => ({ ...prev, isLoading: false}));

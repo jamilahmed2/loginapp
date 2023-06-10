@@ -37,7 +37,7 @@ export const Recovery = () => {
       const { status } = await verifyOTP({ username, code: OTP });
       if (status === 201) {
         toast.success('Verified Successfully!');
-        return navigate('/reset');
+        return navigate('reset');
       }
     } catch (error) {
       toast.error('Wrong OTP! Check your email again.');

@@ -31,7 +31,7 @@ export const Username = () => {
         onSubmit: async values => {
             setUsername(values.username);
             // console.log(values)
-            navigate('/password')
+            navigate('password')
         }
     })
 
