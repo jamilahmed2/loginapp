@@ -5,8 +5,8 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "server":"nodemon server.js"
+    "build": "webpack",
+    "start": "npm run build && node server.js"
   },
   "author": "jamilahmed2",
   "license": "MIT",
