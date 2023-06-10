@@ -8,7 +8,8 @@ import { fileURLToPath } from 'url';
 import GeoIP from "geoip-lite";
 import requestIp from "request-ip";
 import UserVisit from "./model/UserVisit.js";
-
+import dotenv from 'dotenv'
+dotenv.config()
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -40,7 +41,7 @@ app.use((req, res, next) => {
       });
   });
 
-const PORT = process.env.POST || 5000;
+const PORT = process.env.PORT || 8080;
 
 // HTTP GET Request
 // app.get('/', (req, res) => {
