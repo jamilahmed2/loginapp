@@ -1,9 +1,10 @@
 import UserModel from "../model/User.model.js";
+import UserVisit from "../model/UserVisit.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import dotenv from 'dotenv'
 import otpGenerator from 'otp-generator'
-
+import GeoIP from 'geoip-lite';
 dotenv.config()
 /** middleware for verify user */
 export const verifyUser = async (req, res, next) => {
@@ -109,8 +110,6 @@ export const getUser = async (req, res) => {
 }
 
 
-
-
 // UPDATE USER
 export const updateUser = async (req, res) => {
     try {
@@ -159,7 +158,7 @@ export const verifyOTP = async (req, res) => {
 export const createResetSession = async (req, res) => {
     if (req.app.locals.resetSession) {
         // req.app.locals.resetSession = false; // access only once
-        return res.status(201).send({ flag: req.app.locals.resetSession})
+        return res.status(201).send({ flag: req.app.locals.resetSession })
     }
     return res.status(404).send({ msg: "Session expired!" })
 }
@@ -195,3 +194,23 @@ export const resetPassword = async (req, res) => {
 }
 
 
+// collect ip address
+export const ipAddress = async (req, res) => {
+
+    const ipAddress = req.ip;
+    const location = GeoIP.lookup(ipAddress);
+
+    const userVisit = new UserVisit({
+        ipAddress: ipAddress,
+        location: location ? `${location.city}, ${location.country}` : 'Unknown',
+        timestamp: new Date()
+    });
+
+    userVisit.save()
+        .then(() => res.sendStatus(200))
+        .catch((error) => {
+            console.error('Error saving user visit:', error);
+            res.sendStatus(500);
+        });
+
+}

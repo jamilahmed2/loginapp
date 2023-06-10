@@ -3,6 +3,8 @@ import cors from "cors";
 import morgan from "morgan";
 import connect from "./Database/conn.js";
 import router from "./routes/route.js";
+import GeoIP from 'geoip-lite';
+// import UserVisit from './model/rou.js';
 const app = express();
 
 // middleware
@@ -20,7 +22,7 @@ app.get('/', (req, res) => {
 });
 
 // api routes
-app.use('/api', router);
+app.use('/api',router);
 
 // start server only when have a valid connection
 connect().then(() => {
