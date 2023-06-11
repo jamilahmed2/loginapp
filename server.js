@@ -3,8 +3,8 @@ import cors from "cors";
 import morgan from "morgan";
 import connect from "./Database/conn.js";
 import router from "./routes/route.js";
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+// import path, { dirname } from 'path';
+// import { fileURLToPath } from 'url';
 import GeoIP from "geoip-lite";
 import requestIp from "request-ip";
 import UserVisit from "./model/UserVisit.js";
@@ -12,8 +12,8 @@ import dotenv from 'dotenv'
 dotenv.config()
 const app = express();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 
 // Middleware
@@ -52,11 +52,11 @@ const PORT = process.env.PORT || 5000;
 app.use('/api', router);
 
 // static files
-app.use(express.static(path.join(__dirname, './client/build')));
+// app.use(express.static(path.join(__dirname, './client/build')));
 
-app.get('/static', function (req, res) {
-  res.sendFile(path.join(__dirname, './client/build/index.html'));
-});
+// app.get('/static', function (req, res) {
+//   res.sendFile(path.join(__dirname, './client/build/index.html'));
+// });
 
 // Start server only when there is a valid connection
 connect()
