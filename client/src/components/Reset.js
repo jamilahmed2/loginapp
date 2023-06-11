@@ -45,7 +45,7 @@ export const Reset = () => {
         error : <b>Could not Reset!</b>
       });
 
-      resetPromise.then(function(){ navigate('password') })
+      resetPromise.then(function(){ navigate('/password') })
 
     }
   })

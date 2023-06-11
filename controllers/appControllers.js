@@ -21,7 +21,7 @@ export const verifyUser = async (req, res, next) => {
 }
 
 
-// REGISTER POST: http://localhost:5000/register 
+// REGISTER POST: http://localhost:5000/api/register 
 export const register = async (req, res) => {
     try {
         const { username, password, profile, email } = req.body;
@@ -65,7 +65,7 @@ export const register = async (req, res) => {
     }
 }
 
-// Login  POST: http://localhost:5000/login 
+// Login  POST: http://localhost:5000/api/login 
 export const login = async (req, res) => {
     const { username, password } = req.body;
     try {

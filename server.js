@@ -41,7 +41,7 @@ app.use((req, res, next) => {
       });
   });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 
 // HTTP GET Request
 // app.get('/', (req, res) => {
@@ -49,12 +49,12 @@ const PORT = process.env.PORT || 8080;
 // });
 
 // API routes
-app.use('/', router);
+app.use('/api', router);
 
 // static files
 app.use(express.static(path.join(__dirname, './client/build')));
 
-app.get('*', function (req, res) {
+app.get('/static', function (req, res) {
   res.sendFile(path.join(__dirname, './client/build/index.html'));
 });
 
